@@ -1,0 +1,64 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #f0f0f0;
+}
+
+.navbar a {
+  text-decoration: none;
+  color: #333;
+  padding: 10px 15px;
+  /* Add padding for better spacing */
+}
+
+.navbar a:hover {
+  color: grey;
+}
+
+.logo {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* Style the list items (li) */
+.navbar ul {
+  display: flex;
+  list-style: none;
+  padding: 0;
+}
+
+.navbar li {
+  margin-right: 20px;
+}
+
+/* Remove margin from the last list item */
+.navbar li:last-child {
+  margin-right: 0;
+}
+
+/* Styles for login and register links */
+.navbar .login-register {
+  display: flex;
+}
+
+.navbar .login-register a {
+  background-color: #4CAF50;
+  /* Green color */
+  border: none;
+  border-radius: 5px;
+  color: white;
+  padding: 10px 15px;
+  text-align: center;
+  display: inline-block;
+  font-size: 16px;
+  margin-left: 10px;
+  /* Add margin for spacing */
+  cursor: pointer;
+}
+
+.navbar .login-register a:hover {
+  background-color: #45A049;
+  /* Darker green on hover */
+}

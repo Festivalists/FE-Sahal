@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form Input Dropdown Performer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 10px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .form-group select {
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      width: 200px;
+    }
+
+    .form-group button {
+      padding: 5px 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+
+    #performer-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    #performer-list li {
+      margin-bottom: 10px;
+    }
+
+    .delete-performer:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Form Input Dropdown Performer</h1>
+  <p>
+    <button id="add-performer">Tambah Performer</button>
+  </p>
+  <ul id="performer-list"></ul>
+
+  <script>
+    const addPerformerButton = document.getElementById('add-performer');
+    const performerList = document.getElementById('performer-list');
+
+    let nextPerformerId = 2;
+
+    addPerformerButton.addEventListener('click', addPerformer);
+
+    function addPerformer() {
+      const newPerformerLi = document.createElement('li');
+      newPerformerLi.classList.add('form-group');
+
+      const newPerformerLabel = document.createElement('label');
+      newPerformerLabel.textContent = 'Performer:';
+
+      const newPerformerSelect = document.createElement('select');
+      newPerformerSelect.name = 'performer';
+      newPerformerSelect.addEventListener('keyup', filterPerformers);
+
+      const newPerformerSearchInput = document.createElement('input');
+      newPerformerSearchInput.type = 'text';
+      newPerformerSearchInput.placeholder = 'Cari Performer';
+      newPerformerSearchInput.addEventListener('keyup', filterPerformers);
+
+      fetch('http://localhost:3000/performer') // Replace with your API endpoint
+        .then(response => response.json())
+        .then(data => {
+          const allPerformerOptions = [];
+          data.data.forEach(performer => {
+            const newPerformerOption = document.createElement('option');
+            newPerformerOption.value = performer.id;
+            newPerformerOption.textContent = performer.performerName;
+            allPerformerOptions.push(newPerformerOption);
+          });
+
+          newPerformerSelect.append(...allPerformerOptions); // Spread operator for efficient element addition
+        });
+
+      const newPerformerDeleteButton = document.createElement('button');
+      newPerformerDeleteButton.classList.add('delete-performer');
+      newPerformerDeleteButton.textContent = 'Hapus';
+
+      newPerformerLi.appendChild(newPerformerLabel);
+      newPerformerLi.appendChild(newPerformerSearchInput);
+      newPerformerLi.appendChild(newPerformerSelect);
+      newPerformerLi.appendChild(newPerformerDeleteButton);
+
+      performerList.appendChild(newPerformerLi);
+
+      newPerformerDeleteButton.addEventListener('click', () => {
+        newPerformerLi.parentNode.removeChild(newPerformerLi);
+      });
+
+      // Disable delete button for the initial li
+      if (performerList.children.length === 1) {
+        newPerformerDeleteButton.disabled = true;
+      }
+    }
+
+    // Function to filter performers based on search input
+    function filterPerformers(event) {
+      const performerSelect = event.target.parentElement.querySelector('select');
+      const searchInput = event.target.parentElement.querySelector('input[type="text"]'); // More specific search input selection
+
+      const searchTerm = searchInput.value.toLowerCase();
+
+      performerSelect.innerHTML = ''; // Clear existing options
+
+      fetch('http://localhost:3000/performer') // Replace with your API endpoint
+        .then(response => response.json())
+        .then(data => {
+          data.data.forEach(performer => {
+            const newPerformerOption = document.createElement('option');
+            newPerformerOption.value = performer.id;
+            newPerformerOption.textContent = performer.performerName;
+
+            if (performer.performerName.toLowerCase().includes(searchTerm)) {
+              performerSelect.appendChild(newPerformerOption);
+            }
+          });
+        });
+    }
+
+    // Add initial performer
+    addPerformer();
+  </script>
+</body>
+
+</html>

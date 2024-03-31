@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daftar Event</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="/components/navbar.css">
+  <link rel="stylesheet" href="event.css">
+  <link rel="stylesheet" href="/components/footer.css">
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <a href="#" class="logo">Festivalists</a>
+    <ul>
+      <li><a href="home.html">Home</a></li>
+      <li><a href="event.html">Events</a></li>
+      <li><a href="about.html">About Us</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="login-register">
+      <ul>
+        <li><a href="login.html">Login</a></li>
+        <li><a href="register.html">Register</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1>Daftar Event</h1>
+
+    <div class="performer-filter">
+      <input type="text" id="performer-search" placeholder="Cari Performer">
+      <select id="performer-filter">
+        <option value="">Semua Performer</option>
+      </select>
+    </div>
+
+    <section id="events" class="events"></section>
+  </div>
+
+
+  <footer>
+    <p>&copy; 2023 Festivalists</p>
+  </footer>
+
+  <script src="API.js"></script>
+  <script>
+    const eventsSection = document.getElementById('events');
+    const performerFilter = document.getElementById('performer-filter');
+    const performerSearch = document.getElementById('performer-search');
+
+    performerSearch.addEventListener('keyup', () => {
+      const searchTerm = performerSearch.value.toLowerCase();
+      const options = performerFilter.querySelectorAll('option');
+
+
+      options.forEach(option => {
+        const performerName = option.textContent.toLowerCase();
+        if (performerName.indexOf(searchTerm) !== -1) {
+          option.style.display = 'block';
+        } else {
+          option.style.display = 'none';
+        }
+      });
+    });
+
+    performerFilter.addEventListener('change', () => {
+      const selectedPerformerId = performerFilter.value;
+
+      eventsSection.innerHTML = ''; // Clear existing events
+
+      if (selectedPerformerId) {
+        fetchApiEvent(`${API}/event/performer/${selectedPerformerId}`)
+      } else {
+        fetchApiEvent(`${API}/event`);
+      }
+    });
+
+    // Fetch performer data
+    fetch(`${API}/performer`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': true,
+        'Ngrok-Version': '2'
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        data.data.forEach(performer => {
+          const option = document.createElement('option');
+          option.value = performer.id;
+          option.textContent = performer.performerName;
+          performerFilter.appendChild(option);
+        });
+      });
+
+    function fetchApiEvent(url) {
+      fetch(url, {
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': true,
+          'Ngrok-Version': '2'
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          data.data.forEach(event => {
+            const newEventCard = document.createElement('div');
+            newEventCard.classList.add('card');
+
+            const newEventImage = document.createElement('img');
+            newEventImage.classList.add('card-image');
+            console.log(`${API}${event.image}`)
+            newEventImage.src = `${API}${event.image}`;
+
+            const newEventTitle = document.createElement('h2');
+            newEventTitle.classList.add('card-title');
+            newEventTitle.textContent = event.festivalName;
+
+            const newEventPrice = document.createElement('p');
+            newEventPrice.classList.add('card-price');
+            newEventPrice.textContent = `Harga: Rp${event.price}`;
+
+            const newEventPerformersList = document.createElement('ul');
+            newEventPerformersList.classList.add('card-performers');
+
+            event.performers.forEach(performer => {
+              const newEventPerformer = document.createElement('li');
+              if (event.performers[event.performers.length - 1] == performer) {
+                newEventPerformer.textContent = performer.performerName;
+              } else {
+                newEventPerformer.textContent = performer.performerName + ",";
+              }
+              newEventPerformersList.appendChild(newEventPerformer);
+            });
+
+            const detailButton = document.createElement('button');
+            detailButton.textContent = 'Lihat Detail';
+            detailButton.addEventListener('click', () => {
+              window.location.href = `detailEvent.html?id=${event.id}`;
+            });
+
+            newEventCard.appendChild(newEventImage);
+            newEventCard.appendChild(newEventTitle);
+            newEventCard.appendChild(newEventPrice);
+            newEventCard.appendChild(newEventPerformersList);
+            newEventCard.appendChild(detailButton);
+
+            eventsSection.appendChild(newEventCard);
+          });
+        });
+    }
+
+    fetchApiEvent(`${API}/event`);
+  </script>
+</body>
+
+</html>

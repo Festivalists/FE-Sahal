@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detail Event</title>
+  <style>
+    .container {
+      display: flex;
+      justify-content: center;
+      margin: 20px;
+    }
+
+    .section-left {
+      /* width: 50%; */
+      padding-right: 10px;
+    }
+
+    .section-right {
+      /* width: 50%; */
+      padding-left: 10px;
+    }
+
+    .card {
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 10px;
+    }
+
+    .card-image {
+      height: 100%;
+      width: 400px;
+      object-fit: cover;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+
+    .card-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .card-description {
+      margin-bottom: 10px;
+    }
+
+    .card-performers {
+      font-size: 0.8rem;
+      list-style: none;
+      padding: 0;
+    }
+
+    .card-performers li {
+      display: inline-block;
+      margin-right: 10px;
+    }
+  </style>
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="/components/navbar.css">
+  <link rel="stylesheet" href="/components/footer.css">
+</head>
+
+<body>
+  <nav class="navbar">
+    <a href="#" class="logo">Festivalists</a>
+    <ul>
+      <li><a href="home.html">Home</a></li>
+      <li><a href="event.html">Events</a></li>
+      <li><a href="about.html">About Us</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="login-register">
+      <ul>
+        <li><a href="login.html">Login</a></li>
+        <li><a href="register.html">Register</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section id="event-detail" class="container">
+    <section class="section-left">
+    </section>
+    <section class="section-right">
+    </section>
+  </section>
+
+  <footer>
+    <p>&copy; 2023 Festivalists</p>
+  </footer>
+
+  <script src="API.js"></script>
+  <script>
+    const eventId = new URLSearchParams(window.location.search).get('id');
+
+    const eventDetailSection = document.getElementById('event-detail');
+    const sectionLeft = eventDetailSection.querySelector('.section-left');
+    const sectionRight = eventDetailSection.querySelector('.section-right');
+
+    fetch(`${API}/event/${eventId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': true,
+        'Ngrok-Version': '2'
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        const event = data.data;
+
+        // Menambahkan konten ke section kiri
+        const newEventTitle = document.createElement('h2');
+        newEventTitle.classList.add('card-title');
+        newEventTitle.textContent = event.festivalName;
+
+        const newEventPrice = document.createElement('p');
+        newEventPrice.classList.add('card-price');
+        newEventPrice.textContent = 'Rp' + event.price;
+
+        const newEventDescription = document.createElement('p');
+        newEventDescription.classList.add('card-description');
+        newEventDescription.textContent = event.description;
+
+        const newEventPerformersList = document.createElement('ul');
+        newEventPerformersList.classList.add('card-performers');
+
+        event.performers.forEach(performer => {
+          const newEventPerformer = document.createElement('li');
+          if (event.performers[event.performers.length - 1] == performer) {
+            newEventPerformer.textContent = performer.performerName;
+          } else {
+            newEventPerformer.textContent = performer.performerName + ",";
+          }
+          newEventPerformersList.appendChild(newEventPerformer);
+        });
+
+        sectionLeft.appendChild(newEventTitle);
+        sectionLeft.appendChild(newEventPrice);
+        sectionLeft.appendChild(newEventDescription);
+        sectionLeft.appendChild(newEventPerformersList);
+
+        // Menambahkan gambar ke section kanan
+        const newEventImage = document.createElement('img');
+        newEventImage.classList.add('card-image');
+        newEventImage.src = `${API}${event.image}`;
+
+        sectionRight.appendChild(newEventImage);
+      });
+  </script>
+</body>
+
+</html>

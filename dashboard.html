@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+
+<body>
+  <h1>Dashboard</h1>
+
+  <a href="home.html">Home</a>
+
+  <section class="events">
+    <h2>Daftar Event</h2>
+    <table id="events-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nama Festival</th>
+          <th>Harga</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="performers">
+    <h2>Daftar Performer</h2>
+    <table id="performers-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nama Performer</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </section>
+
+  <script src="API.js"></script>
+  <script>
+    const eventsTable = document.getElementById('events-table');
+    const performersTable = document.getElementById('performers-table');
+
+    // Fetch events data
+    async function getEvents() {
+      const response = await fetch(`${API}/event`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': true,
+          'Ngrok-Version': '2'
+        }
+      });
+      const data = await response.json();
+      return data;
+    }
+
+    // Fetch performers data
+    async function getPerformers() {
+      const response = await fetch(`${API}/performer`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': true,
+          'Ngrok-Version': '2'
+        }
+      });
+      const data = await response.json();
+      return data;
+    }
+
+    // Populate events table
+    async function populateEventsTable() {
+      const events = await getEvents();
+      events.data.forEach(event => {
+        // Buat row baru sebagai Node object
+        const row = document.createElement('tr');
+
+        // Tambahkan konten ke row
+        row.innerHTML = `
+      <td>${event.id}</td>
+      <td>${event.festivalName}</td>
+      <td>${event.price}</td>
+    `;
+
+        // Append row ke tbody
+        eventsTable.tBodies[0].appendChild(row);
+      });
+    }
+
+    // Populate performers table
+    async function populatePerformersTable() {
+      const performers = await getPerformers();
+      performers.data.forEach(performer => {
+        // Buat row baru sebagai Node object
+        const row = document.createElement('tr');
+        // Tambahkan konten ke row
+        row.innerHTML = `
+      <td>${performer.id}</td>
+      <td>${performer.performerName}</td>`;
+
+        performersTable.tBodies[0].appendChild(row);
+      });
+    }
+
+    // Call functions to populate tables
+    populateEventsTable();
+    populatePerformersTable();
+
+  </script>
+</body>
+
+</html>

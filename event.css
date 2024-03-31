@@ -1,0 +1,84 @@
+.container {
+  margin: 20px;
+}
+
+.events {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 1rem;
+  width: 20rem;
+}
+
+.card-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.card-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.card-price {
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.card-performers {
+  font-size: 0.8rem;
+  list-style: none;
+  padding: 0;
+}
+
+.card-performers li {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+/* Styles for performer filter dropdown */
+.performer-filter {
+  position: relative;
+  display: inline-block;
+}
+
+.performer-filter select {
+  font-family: inherit;
+  font-size: 16px;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 180px;
+  /* Adjust width as needed */
+}
+
+.performer-filter input[type="text"] {
+  font-family: inherit;
+  font-size: 16px;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 180px;
+}
+
+.performer-filter select:hover {
+  border-color: #aaa;
+}
+
+.performer-filter input[type="text"]:focus {
+  border-color: #aaa;
+  outline: none;
+}
